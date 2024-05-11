@@ -1,0 +1,26 @@
+.slider {
+    appearance: auto;
+    width: 150px;
+    height: 20px;
+    background: #0055EE;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+}
+.summary {
+    position:absolute;
+    border-style:dashed;
+    border-width:2px;
+    padding:0px;}
+.btnSummary {
+    width:150px;
+    height:40px;
+    border-radius:10%;
+    background:#c7c9cc;
+    color:#000000;
+    font-size:20px;
+    font-weight:bolder;
+    text-align:center;
+    cursor:pointer;
+    transition:all .2s;
+}

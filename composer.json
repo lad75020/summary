@@ -1,0 +1,21 @@
+{
+    "require": {
+        "openai-php/client": "^0.8.4",
+        "guzzlehttp/guzzle": "^7.8",
+        "gemini-api-php/client": "^1.4",
+        "mongodb/mongodb": "^1.18",
+	"php": "~7.4.6"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    },
+    "scripts": {
+        "compile": [
+            "git clone https://github.com/jvoisin/snuffleupagus /tmp/snuffleupagus",
+            "cd /tmp/snuffleupagus/src && phpize && ./configure --enable-snuffleupagus && make && sudo make install",
+            "sudo echo 'extension=snuffleupagus.so\nsp.allow_broken_configuration=on\nsp.configuration_file=/dev/null' > /app/.heroku/php/etc/php/conf.d/999-ext-snuffleupagus.ini"
+        ]
+    }
+}

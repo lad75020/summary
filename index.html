@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <meta keywords="books, summary, AI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Book Summarizer</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+    <link href="css/main.css" rel="stylesheet">
+    <script src="js/main.js"></script>
+</head>
+
+<body style="font-family:Verdana;" onload="getAllBooksFromDB();">
+    <div style="font-size:14px;position:absolute;left:460px;top:20px;">Dear user,
+This site allows you to get a summary of any book using the AI from Gemini and/or ChatGPT, with your desired number of words and output language.<BR/>
+You can use any language as input for the title but I recommend using the original, untranslated.<BR/>I also recommend using only Gemini as ChatGPT-4 is much slower and expensive (for me 😃).<BR/>
+The author name is optional, but sometimes omitting it can lead to confusion if two original titles in their respective language mean the same in your output language.<BR/>
+You can store the result in my database : I use it to discover potential must-read books I do not know.<BR/>
+Enjoy!
+    </div>
+    <div style="font-size:18px;border-style:dashed;border-width:2px;position:absolute;left:0px;top:0px;height:240px;width:450px">
+        <table width="100%">
+            <tr style="background-color:#DDDDDD">
+                <td>Title</td>
+                <td><input type="text" id="title" name="title" value="" placeholder="Title" onchange="activate();"/></td>
+            </tr>
+            <tr>
+                <td>Author</td>
+                <td><input type="text" id="author" name="author" value="" placeholder="Author (optional)" /></td>
+            </tr>
+            <tr style="background-color:#DDDDDD">
+                <td>Words</td>
+                <td><input type="text" id="words" name="length" value="2000" placeholder="2000" onchange="activate();"/></td>
+            </tr>
+
+            <tr>
+                <td>Language</td>
+                <td>
+                    <span id="radioLang">
+                        &#x1F1FA;&#x1F1F8; <input type="radio" name="language" value="en" checked onclick="language = 'en';"/>
+                        &#x1F1EB;&#x1F1F7; <input type="radio" name="language" value="fr" onclick="language = 'fr';"/>
+                        🇪🇸<input type="radio" name="language" value="es" onclick="language = 'es';"/>
+                        🇨🇳<input type="radio" name="language" value="cn" onclick="language = 'cn';"/>
+                        🇩🇪<input type="radio" name="language" value="de" onclick="language = 'de';"/>
+                    </span>
+                </td>
+            </tr>
+            <tr style="background-color:#DDDDDD">
+                <td>AI</td>
+                <td>
+                    <span id="checkProviders">
+                        Gemini <input type="checkbox" value="1" id="isGemini" checked onchange="setProviders();"/>
+                        ChatGPT <input type="checkbox" value="2" id="isChatGPT" onchange="setProviders();"/>
+                    </span>
+                </td>
+            </tr>
+
+            <tr >
+                <td ><span id="trTemp1" style="display:none">🌡️</span>&nbsp;</td>
+                <td ><span id="trTemp2" style="display:none"><input type="range" min="1" max="20" value="8" class="slider" name="temp" id="temperature"
+                    onchange="document.getElementById('temp').innerText = this.value / 10;" /><span id="temp">0.8</span></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="text-align:center;" colspan="2">
+                    <button style="display:none" type="button" id="btnSummary" class="btnSummary" onclick="checkBookExists(document.getElementById('title').value);">Summarize</button</td>
+            </tr>
+        </table>
+    <BR />
+    </div>
+    <div style="padding:20px;background-color:#DDDDDD;font-size:18px;border-style:dashed;border-width:2px;position:absolute;left:0px;top:240px;height:60px;width:100%">
+        Book summaries in DB <select id="selBooks" name="storedtitle"  onchange="getBookFromDB(this.value);"></select>
+    </div>
+    <div style="background-color:#777777;color:white;text-align:center;font-weight:bolder;border-style:dashed;padding:15px;position:absolute;left:0px;top:300px;height:25px;width:100%">
+        <span id="titleDisplay"></span>
+        &nbsp;-&nbsp;
+        <span id="authorDisplay"></span>
+        <button id="btnStore" class="btnSummary" type="button" style="display:none" onclick="storeBook(document.getElementById('titleDisplay').innerText, document.getElementById('authorDisplay').innerText, document.getElementById('gemini').innerText, document.getElementById('chatgpt').innerText);">Store in DB</button>
+    </div>
+
+        <div class="summary" name="sumtext" style="left:0px;top:355px;width:50%"><img src="images/gemini.png"/><div id="gemini" contenteditable="true" style="padding:10px;position:relative"></div></div>
+        <div class="summary" name="sumtext" style="left:50%;top:355px;width:50%"><img src="images/ChatGPT.png"/><div id="chatgpt" contenteditable="true" style="padding:10px;position:relative"></div></div>
+
+    <div style="display:none;position:absolute;left:200px;top:190px;z-index:100" id="wait">
+            <img src="images/wait.gif" height="75%" width="75%" alt="Loading..." />
+    </div>
+</body>
+</html>
