@@ -5,6 +5,3 @@ function getPost($value){
     else
         return "";
 }
-
-
-?>

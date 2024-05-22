@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"CodeGPT.apiKey": "Google AI Studio",
+		"CodeGPT.Autocomplete.maxTokens": 2000,
+		"CodeGPT.Autocomplete.enabled": true
+	}
+}

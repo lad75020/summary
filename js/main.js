@@ -1,5 +1,5 @@
 var language = "en";
-var providers = 1;
+var providers = 3;
 var running = 0;
 
 function activate(){
@@ -25,15 +25,8 @@ function setProviders(){
     providers = 0;
     if (document.getElementById("isGemini").checked)
         providers +=1;
-    if (document.getElementById("isChatGPT").checked){
+    if (document.getElementById("isChatGPT").checked)
         providers +=2;
-        document.getElementById("trTemp1").style.display = 'inline';
-        document.getElementById("trTemp2").style.display = 'inline';
-    }
-    else{
-        document.getElementById("trTemp1").style.display = 'none';
-        document.getElementById("trTemp2").style.display = 'none';
-    }
     activate();
 }
 
@@ -94,8 +87,8 @@ function getAllBooksFromDB(){
                 option.text = allBooks[key];
                 option.value = key;
                 document.getElementById("selBooks").add(option);
-                document.getElementById('wait').style.display = 'none'; 
             }
+            document.getElementById('wait').style.display = 'none'; 
         }}
         xmlhttp.open("GET", "getAllBooks.php",true);
         xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -104,6 +97,8 @@ function getAllBooksFromDB(){
 
 function getBookFromDB(bookID) {
     running +=1;
+    document.getElementById("chatgpt").innerText = "";
+    document.getElementById("gemini").innerText = "";
     activate();
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
@@ -115,6 +110,8 @@ function getBookFromDB(bookID) {
             document.getElementById("btnStore").style.display = "none";
             document.getElementById("gemini").contentEditable = false;
             document.getElementById("chatgpt").contentEditable = false;
+            document.getElementById("dislikeGemini").style.display = "none";
+            document.getElementById("dislikeGPT").style.display = "none";
             running -=1;
             activate();
         }
@@ -130,6 +127,9 @@ function getBookFromDB(bookID) {
 
 function getBookFromAI(title, author, temperature, length, language, ai){
     document.getElementById('btnSummary').style.display = 'none';
+    document.getElementById("dislikeGemini").style.display = "none";
+    document.getElementById("dislikeGPT").style.display = "none";
+    document.getElementById("btnStore").style.display = "none";
     running +=1;
     activate();
     var xmlhttp = new XMLHttpRequest();
@@ -141,8 +141,11 @@ function getBookFromAI(title, author, temperature, length, language, ai){
             document.getElementById("gemini").contentEditable = true;
             document.getElementById("chatgpt").contentEditable = true;
             running -=1;
-            if (running == 0)
+            if (running == 0){
                 document.getElementById("btnStore").style.display = "inline";
+                document.getElementById("dislikeGemini").style.display = "inline";
+                document.getElementById("dislikeGPT").style.display = "inline";
+            }
             activate();
         }
         else if (this.readyState == 4 && this.status == 500) {
@@ -163,6 +166,8 @@ function storeBook(title, author, gemini, chatgpt){
             if (this.readyState == 4 && this.status == 200) {
                 getAllBooksFromDB();
                 document.getElementById('wait').style.display = 'none';
+                document.getElementById("dislikeGemini").style.display = "none";
+                document.getElementById("dislikeGPT").style.display = "none";
             }}
         xmlhttp.open("POST", "store.php",true);
         xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');

@@ -1,7 +1,11 @@
 <?php
 require 'vendor/autoload.php';
 use GeminiAPI\Client;
+use GeminiAPI\Enums\HarmCategory;
+use GeminiAPI\Enums\HarmBlockThreshold;
+use GeminiAPI\GenerationConfig;
 use GeminiAPI\Resources\Parts\TextPart;
+use GeminiAPI\SafetySetting;
 
 include "common.php";
 include "include.php";
@@ -54,13 +58,29 @@ if (getPost($_POST['title']) != "" && getPost($_POST['length']) > 500 && getPost
                     'messages' => [
                         ['role' => 'user', 'content' => $prompt],
                     ],
-                    'temperature' => $_POST["temp"] / 10,
+                    'temperature' => getPost($_POST["temp"]) / 10,
                 ]);
                 $book->chatgpt = $oaisummary->choices[0]->message->content;
             }
               
             if ($_POST['providers'] == 1 || $_POST['providers'] == 3){
-                $gemsummary = $gemini->geminiPro()->generateContent(
+                $safetySetting = new SafetySetting(
+                    HarmCategory::HARM_CATEGORY_HATE_SPEECH,
+                    HarmBlockThreshold::BLOCK_LOW_AND_ABOVE,
+                );
+                
+                $generationConfig = (new GenerationConfig())
+                    ->withCandidateCount(1)
+                    ->withMaxOutputTokens(1024)
+                    ->withTemperature(getPost($_POST["temp"]) / 10)
+                    ->withTopK(40)
+                    ->withTopP(0.6)
+                    ->withStopSequences(['STOP']);
+
+                $gemsummary = $gemini->geminiPro()
+                ->withAddedSafetySetting($safetySetting)
+                ->withGenerationConfig($generationConfig)
+                ->generateContent(
                     new TextPart($prompt),
                 );
                 $book->gemini = $gemsummary->text();

@@ -15,3 +15,7 @@ summary.php
 js/main3.js
 js/maingpt.js
 include.php
+vendor/
+node_modules/
+/node_modules
+/vendor

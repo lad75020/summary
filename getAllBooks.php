@@ -9,4 +9,3 @@ foreach($booksFromDB as $book){
 
 }
 echo(json_encode($books));
-
